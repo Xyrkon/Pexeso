@@ -1,51 +1,72 @@
 body {
-    padding: 25px;
+    background: #f2f6ff;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 20px;
 }
 
-.main {
-    width: 20%;
+.nadpis {
+    text-align: center;
+    color: #4b5ca9;
+    margin-bottom: 20px;
+    font-size: 3rem;
 }
 
-.btn {
-    margin-top: 10px;
+#hrat {
+    display: block;
+    margin: 0 auto 20px auto;
+    padding: 10px 30px;
+    font-size: 1.2rem;
 }
 
-.otocenaKarta {
-    width: 100px;
-    height: 100px;
-    background-color: #01ff40;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: white;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: transform 0.3s;
-
+.infoBox {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    color: #333;
 }
 
-.zavrenaKarta {
-    width: 100px;
-    height: 100px;
-    background-color: #3498db;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: white;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: transform 0.3s;
+#zapisCasu,
+#zapisKroku {
+    font-weight: bold;
+    color: #4b5ca9;
 }
 
 .hraciPole {
     display: grid;
     grid-template-columns: repeat(4, 100px);
-    grid-gap: 10px;
+    grid-gap: 15px;
     justify-content: center;
 }
 
+.zavrenaKarta,
+.otocenaKarta,
+.spravnaKarta {
+    width: 100px;
+    height: 100px;
+    font-size: 2rem;
+    background-color: #e0e7ff;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.zavrenaKarta:hover {
+    transform: scale(1.05);
+}
+
 .iconHolder {
-    display: none;
+    visibility: hidden;
+}
+
+.spravnaKarta {
+    background-color: #c3f7cb;
+    cursor: default;
+}
+
+.otocenaKarta .nothing {
+    visibility: visible;
 }
