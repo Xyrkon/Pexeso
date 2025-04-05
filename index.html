@@ -1,29 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="styly.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pexeso</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <link rel="stylesheet" href="styly.css" />
 </head>
 
 <body>
-    <h1 class="nadpis">Pexeso</h1>
-    <button id="hrat" type=" button" class="btn btn-primary">Hrát</button>
-
-    <hr>
-
+    <h1 class="nadpis">🧠 Pexeso</h1>
+    <button id="hrat" type="button" class="btn btn-primary">Hrát</button>
+    <div class="infoBox">
+        Odehraný čas: <span id="zapisCasu">0s</span><br />
+        Počet kroků: <span id="zapisKroku">0</span>
+    </div>
     <div id="hraciPole" class="hraciPole"></div>
-
-
-
-
-
-
-
 
     <script>
         var ovoce = ['🍎', '🍎', '🍌', '🍌', '🍇', '🍇', '🍉', '🍉', '🍓', '🍓', '🍒', '🍒', '🥝', '🥝', '🍍', '🍍'];
@@ -31,44 +25,88 @@
         var hraciPole = document.getElementById("hraciPole");
         var otoceneKarty = [];
         var spravneDvojic = 0;
+        var pocetKroku = 0;
+        var zamknuti = false;
+
+        var casovac = document.getElementById("zapisCasu");
+        var zapisKroku = document.getElementById("zapisKroku");
+        var cas = 0;
+        var interval;
 
         hrat.addEventListener("click", function () {
-            hrat.innerText = "Hrát znovu"
+            hrat.innerText = "Hrát znovu";
             ovoce.sort(() => 0.5 - Math.random());
             hraciPole.innerHTML = "";
+            spravneDvojic = 0;
+            pocetKroku = 0;
+            zapisKroku.innerText = "0";
+            otoceneKarty = [];
+            clearInterval(interval);
+
             ovoce.forEach(emoji => {
-                hraciPole.innerHTML += `<div onclick="otoceni(this)" class="zavrenaKarta"><div class="iconHolder">` + emoji + `</div></div>`
+                hraciPole.innerHTML += `
+          <div onclick="otoceni(this)" class="zavrenaKarta">
+            <div class="nothing iconHolder">${emoji}</div>
+          </div>
+        `;
             });
-        })
+
+            startTimer();
+        });
+
+        function startTimer() {
+            cas = 0;
+            casovac.innerText = "0s";
+            interval = setInterval(() => {
+                casovac.innerText = cas + "s";
+                cas++;
+                if (spravneDvojic == 8) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
 
         function otoceni(element) {
+            if (zamknuti) return;
             element.classList.add("otocenaKarta");
             element.classList.remove("zavrenaKarta");
             element.removeAttribute("onclick");
+            element.querySelector(".nothing").classList.remove("iconHolder");
             otoceneKarty.push(element);
 
             if (otoceneKarty.length == 2) {
-                var karta1 = otoceneKarty[0].querySelector(".iconHolder").innerText;
-                var karta2 = otoceneKarty[1].querySelector(".iconHolder").innerText;
+                zamknuti = true;
+                var karta1 = otoceneKarty[0].querySelector(".nothing").innerText;
+                var karta2 = otoceneKarty[1].querySelector(".nothing").innerText;
+                pocetKroku++;
+                zapisKroku.innerText = pocetKroku;
 
                 if (karta1 == karta2) {
-                    console.log("Shoda! Karty zůstávají otočené.");
+                    spravneDvojic++;
+                    otoceneKarty.forEach(el => {
+                        el.classList.add("spravnaKarta");
+                        el.classList.remove("otocenaKarta");
+                    });
                     otoceneKarty = [];
-                    spravneDvojic++
-                    if (spravneDvojic == 8) {
-                        console.log("Výborně! Dohráli jste pexeso.")
+                    zamknuti = false;
 
+                    if (spravneDvojic == 8) {
+                        setTimeout(() => {
+                            alert("🎉 Vyhráli jste! Čas: " + cas + "s, Kroky: " + pocetKroku);
+                        }, 300);
                     }
+
                 } else {
-                    console.log("Neshoda! Karty se otočí zpět.");
                     setTimeout(() => {
                         otoceneKarty.forEach(karta => {
                             karta.classList.remove("otocenaKarta");
                             karta.classList.add("zavrenaKarta");
+                            karta.querySelector(".nothing").classList.add("iconHolder");
                             karta.setAttribute("onclick", "otoceni(this)");
                         });
                         otoceneKarty = [];
-                    }, 1500);
+                        zamknuti = false;
+                    }, 1000);
                 }
             }
         }
